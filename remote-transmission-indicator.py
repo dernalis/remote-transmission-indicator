@@ -142,7 +142,8 @@ class RemoteTransmission:
 		return True
 
 	def openTRG(self, widget):
-		os.system("transgui")
+		#os.system("transgui")
+		os.system("google-chrome --app=http://" + HOST + ":" + PORT)
 
 	#
 	# connection methods		
