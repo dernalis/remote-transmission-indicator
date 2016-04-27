@@ -181,8 +181,14 @@ class RemoteTransmission:
 		
 	def show_speed_and_mode(self, down, up, turtle_mode_active):
 		turtle_sym = ""
+		downlabel = ""
+		uplabel = ""
+		dash = ""
 		if turtle_mode_active: turtle_sym = TURTLE_MODE_SYMBOL
-		self.indicator.set_label(turtle_sym + DOWN_SYMBOL+str(down)+u" kB/s - "+UP_SYMBOL+str(up)+" kB/s")
+		if down > 0: downlabel = DOWN_SYMBOL+str(down)+u" kB/s"
+		if up > 0: uplabel = UP_SYMBOL+str(up)+" kB/s" 
+		if (up > 0) & (down > 0): dash = " - "
+		self.indicator.set_label(turtle_sym + downlabel + dash + uplabel)
 
 	def set_error_mode(self):
 		self.connected = False
