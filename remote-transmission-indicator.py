@@ -8,10 +8,17 @@ import gtk
 import appindicator
 import transmissionrpc	# $ easy_install transmissionrpc
 
-USER = ''
-PASSWORD = ''
-HOST = ''
-PORT = ''
+from ConfigParser import SafeConfigParser
+from os.path import expanduser
+home = expanduser("~")
+
+config = SafeConfigParser()
+config.read(home + '/.config/remote-transmission-indicator.conf')
+
+USER = config.get('transmission', 'user')
+PASSWORD = config.get('transmission', 'password')
+HOST = config.get('transmission', 'host')
+PORT = config.get('transmission', 'port')
 ##
 # Refresh rate in seconds
 PING_FREQUENCY = 5
@@ -42,7 +49,7 @@ class RemoteTransmission:
 		self.nbr_of_errors = -1
 		self.turtle_mode_active = False
 		#create indicator
-		self.indicator = appindicator.Indicator("remote-transmission-applet", "",  appindicator.CATEGORY_APPLICATION_STATUS)
+		self.indicator = appindicator.Indicator("remote-transmission-applet", "transmission-remote",  appindicator.CATEGORY_APPLICATION_STATUS)
 		self.indicator.set_status(appindicator.STATUS_ACTIVE)
 		
 		self.menu_setup()
@@ -175,7 +182,7 @@ class RemoteTransmission:
 	def show_speed_and_mode(self, down, up, turtle_mode_active):
 		turtle_sym = ""
 		if turtle_mode_active: turtle_sym = TURTLE_MODE_SYMBOL
-		self.indicator.set_label(turtle_sym + DOWN_SYMBOL+str(down)+u" KB/s - "+UP_SYMBOL+str(up)+" KB/s")
+		self.indicator.set_label(turtle_sym + DOWN_SYMBOL+str(down)+u" kB/s - "+UP_SYMBOL+str(up)+" kB/s")
 
 	def set_error_mode(self):
 		self.connected = False
