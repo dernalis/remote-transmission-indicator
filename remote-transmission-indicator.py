@@ -10,7 +10,10 @@ import transmissionrpc	# $ easy_install transmissionrpc
 
 from ConfigParser import SafeConfigParser
 from os.path import expanduser
+import notify2
+
 home = expanduser("~")
+notify2.init("transmission")
 
 config = SafeConfigParser()
 config.read(home + '/.config/remote-transmission-indicator.conf')
@@ -58,6 +61,7 @@ class RemoteTransmission:
 		self.connected = False
 		self.first_run = True
 		self.connection_error_shown = True
+		self.downloadlist = []
 
 	
 	def menu_setup(self):
@@ -122,6 +126,12 @@ class RemoteTransmission:
 				down += (t.rateDownload / 1024)
 				up += (t.rateUpload / 1024)
 				if t.status in ("seeding","downloading"):	active += 1
+				if t.status == "downloading" and t.id not in self.downloadlist: 
+					self.downloadlist.append(t.id)
+				if t.status != "downloading" and t.id in self.downloadlist: 
+					self.downloadlist.remove(t.id) 
+					if t.percentDone > 0.99:
+						notify2.Notification("Transmission: Download complete",t.name,"transmission").show()
 				if t.error > 1: error += 1
 			self.up = up
 			self.down = down
